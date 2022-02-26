@@ -1,0 +1,20 @@
+[workspace]
+members = [
+    "bin/collator",
+    "runtime/local",
+    "runtime/astar",
+    "runtime/shiden",
+    "runtime/shibuya",
+    "frame/block-reward",
+    "frame/custom-signatures",
+    "frame/dapps-staking",
+    "precompiles/staking",
+]
+
+exclude = [
+    "vendor"
+]
+
+[profile.release]
+# Astar runtime requires unwinding.
+panic = "unwind"
