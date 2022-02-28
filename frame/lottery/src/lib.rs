@@ -181,6 +181,7 @@ pub mod pallet {
 		type Ten: Get<BalanceOf<Self>>;
 		type BaseAmount: Get<BalanceOf<Self>>;
 		type TotalAmount: Get<BalanceOf<Self>>;
+		type FeeAmount: Get<BalanceOf<Self>>;
 		type MaxAmount: Get<BalanceOf<Self>>;
 		type FirstPhase: Get<BalanceOf<Self>>;
 		type SecendPhase: Get<BalanceOf<Self>>;
@@ -405,89 +406,14 @@ pub mod pallet {
 				T::Currency::deposit_creating(&dest, user_amount * T::BaseAmount::get());
 			}
 
-			// let who = ensure_signed(origin)?;
 			let account_llc = T::LLCAccount::get();
-			info!("alice_acc from runtime: {:#?}", account_llc.clone());
-			info!( "user_amount:  {:?}", user_amount);
-			info!( "before total_issuance: {:?}", T::Currency::total_issuance()/T::BaseAmount::get());
-			info!( "llc total_balance:  {:?}", T::Currency::total_balance(&account_llc)/T::BaseAmount::get());
-			info!( "---- 1.0:  {:?}", user_amount * T::BaseAmount::get());
-			if T::Currency::total_balance(&account_llc).lt(&T::MaxAmount::get()) {
-				info!("llc total_balance is <= 25_0000_0000");
-				// T::Currency::deposit_creating(&account_llc, user_amount * T::BaseAmount::get());
-				if T::Currency::total_issuance().lt(&T::FirstPhase::get()) {
-					info!("------FirstPhase is <= 20_0000_0000");
-					info!( "---- 0.8:  {:?}", user_amount*T::Eighty::get()/T::Hundred::get()* T::BaseAmount::get());
-
-					let newamount = T::Currency::total_balance(&account_llc)+user_amount*T::Eighty::get()/T::Hundred::get()* T::BaseAmount::get();
-					info!( "---- newamount:  {:?}", newamount);
-
-					if newamount.ge(&T::MaxAmount::get()){
-						info!( "---- ge MaxAmount:  {:?}", newamount/T::BaseAmount::get());
-						T::Currency::deposit_creating(&account_llc, T::MaxAmount::get()-T::Currency::total_balance(&account_llc));
-
-					}else{
-						info!( "----lt MaxAmount:  {:?}", newamount/T::BaseAmount::get());
-						T::Currency::deposit_creating(&account_llc, user_amount*T::Eighty::get()/T::Hundred::get()* T::BaseAmount::get());
-
-					}
+			let llcTotalAmount = T::Currency::total_balance(&account_llc);
+			let remain = T::TotalAmount::get() - llcTotalAmount;
+			info!("remain:{:?}",remain);
+			let llcamount = remain/T::FeeAmount;
+			T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
 
 
-				} else if T::Currency::total_issuance().lt(&T::SecendPhase::get()) {
-					info!("------SecendPhase is <= 40_0000_0000");
-					info!( "---- 0.5:  {:?}", user_amount*T::Fifty::get()/T::Hundred::get()* T::BaseAmount::get());
-
-					let newamount = T::Currency::total_balance(&account_llc)+user_amount*T::Fifty::get()/T::Hundred::get()* T::BaseAmount::get();
-					info!( "---- newamount:  {:?}", newamount);
-
-					if newamount.ge(&T::MaxAmount::get()){
-						info!( "---- ge MaxAmount:  {:?}", newamount/T::BaseAmount::get());
-						T::Currency::deposit_creating(&account_llc, T::MaxAmount::get()-T::Currency::total_balance(&account_llc));
-
-					}else{
-						info!( "----lt MaxAmount:  {:?}", newamount/T::BaseAmount::get());
-						T::Currency::deposit_creating(&account_llc, user_amount*T::Fifty::get()/T::Hundred::get()* T::BaseAmount::get());
-
-					}
-
-
-				} else if T::Currency::total_issuance().lt(&T::ThirdPhase::get()) {
-					info!("------ThirdPhase is <= 60_0000_0000");
-					info!( "---- 0.2:  {:?}", user_amount*T::Twenty::get()/T::Hundred::get()* T::BaseAmount::get());
-					let newamount = T::Currency::total_balance(&account_llc)+user_amount*T::Twenty::get()/T::Hundred::get()* T::BaseAmount::get();
-					info!( "---- newamount:  {:?}", newamount/T::BaseAmount::get());
-
-					if newamount.ge(&T::MaxAmount::get()){
-						info!( "---- ge MaxAmount:  {:?}", newamount/T::BaseAmount::get());
-						T::Currency::deposit_creating(&account_llc, T::MaxAmount::get()-T::Currency::total_balance(&account_llc));
-
-					}else{
-						info!( "----lt MaxAmount:  {:?}", newamount/T::BaseAmount::get());
-						T::Currency::deposit_creating(&account_llc, user_amount*T::Twenty::get()/T::Hundred::get()* T::BaseAmount::get());
-
-					}
-
-				} else {
-					info!("------ForthPhase is <= 80_0000_0000");
-					info!( "---- 0.1:  {:?}", user_amount*T::Ten::get()/T::Hundred::get()* T::BaseAmount::get());
-					let newamount = T::Currency::total_balance(&account_llc)+user_amount*T::Ten::get()/T::Hundred::get()* T::BaseAmount::get();
-					info!( "---- newamount:  {:?}", newamount/T::BaseAmount::get());
-
-					if newamount.ge(&T::MaxAmount::get()){
-						info!( "---- ge MaxAmount:  {:?}", newamount/T::BaseAmount::get());
-						T::Currency::deposit_creating(&account_llc, T::MaxAmount::get()-T::Currency::total_balance(&account_llc));
-
-					}else{
-						info!( "----lt MaxAmount:  {:?}", newamount/T::BaseAmount::get());
-						T::Currency::deposit_creating(&account_llc, user_amount*T::Ten::get()/T::Hundred::get()* T::BaseAmount::get());
-
-					}
-
-				}
-			} else {
-				info!("llc total_balance is > 25_0000_0000");
-			}
-			info!( "end total_issuance: {:?}", T::Currency::total_issuance());
 			Self::deposit_event(Event::<T>::LotteryStarted);
 			Ok(())
 		}
