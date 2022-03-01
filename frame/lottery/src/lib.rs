@@ -121,7 +121,9 @@ pub mod pallet {
 	use frame_support::log::info;
 	use super::*;
 	use frame_support::pallet_prelude::*;
+	use frame_support::storage::child::put;
 	use frame_system::pallet_prelude::*;
+	use sp_runtime::traits::CheckedAdd;
 
 	#[pallet::pallet]
 	#[pallet::generate_store(pub(super) trait Store)]
@@ -223,6 +225,10 @@ pub mod pallet {
 		TooManyCalls,
 		/// Failed to encode calls
 		EncodingFailed,
+
+		NoneValue,
+
+		StorageOverflow,
 	}
 
 	#[pallet::storage]
@@ -250,10 +256,8 @@ pub mod pallet {
 
 	/// DistanceCount.
 	#[pallet::storage]
-	pub(crate) type DistanceCount<T> = StorageValue<_, u32, ValueQuery>;
+	pub type DistanceCount<T> = StorageValue<_, BalanceOf<T>>;
 
-
-	/// Each ticket's owner.
 	///
 	/// May have residual storage from previous lotteries. Use `TicketsCount` to see which ones
 	/// are actually valid ticket mappings.
@@ -265,6 +269,26 @@ pub mod pallet {
 	#[pallet::storage]
 	pub(crate) type CallIndices<T: Config> =
 		StorageValue<_, BoundedVec<CallIndex, T::MaxCalls>, ValueQuery>;
+
+	#[pallet::genesis_config]
+	pub struct GenesisConfig<T: Config> {
+		pub single_value: BalanceOf<T>,
+	}
+
+	#[cfg(feature = "std")]
+	impl<T: Config> Default for GenesisConfig<T> {
+		fn default() -> Self {
+			Self { single_value: Default::default() }
+		}
+	}
+
+	#[pallet::genesis_build]
+	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
+		fn build(&self) {
+			<DistanceCount<T>>::put(T::Distance::get());
+		}
+	}
+
 
 	#[pallet::hooks]
 	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
@@ -426,16 +450,40 @@ pub mod pallet {
 			//发行n，(剩下总量-n)*n/1000000000
 			// let llcamount = remain/T::FeeAmount::get();
 
-			// T::Distance =  T::FeeAmount::get();
-			if consumer.ge(&T::Distance::get()){
-				info!("consumer >:{:?}",T::Distance::get());
-				let llcamount = (remain-user_amount)*user_amount/T::FeeAmount::get()*T::Ninety::get()/T::Hundred::get();
-				T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
+			let dis = <DistanceCount<T>>::get();
+			info!("dis:{:?}",dis);
 
-			}else {
-				let llcamount = (remain-user_amount)*user_amount/T::FeeAmount::get();
-				T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
+
+			// Read a value from storage.
+			match <DistanceCount<T>>::get() {
+				// Return an error if the value has not been set.
+				None =>Err(Error::<T>::NoneValue)?,
+				Some(old) => {
+
+					if consumer.ge(&old){
+						info!("consumer >:{:?}",T::Distance::get());
+						let llcamount = (remain-user_amount)*user_amount/T::FeeAmount::get()*T::Ninety::get()/T::Hundred::get();
+						T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
+						// Increment the value read from storage; will error in the event of overflow.
+						let new = old.checked_add(&T::Distance::get()).ok_or(Error::<T>::StorageOverflow)?;
+						// Update the value in storage with the incremented result.
+						<DistanceCount<T>>::put(new);
+						let dis = <DistanceCount<T>>::get();
+						info!("--dis:{:?}",dis);
+					}else {
+						let llcamount = (remain-user_amount)*user_amount/T::FeeAmount::get();
+						T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
+						let dis = <DistanceCount<T>>::get();
+						info!("**dis:{:?}",dis);
+					}
+
+
+				},
 			}
+
+
+
+
 
 			Self::deposit_event(Event::<T>::LotteryStarted);
 			Ok(())
