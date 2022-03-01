@@ -224,17 +224,17 @@ pub fn testnet_genesis(
 	let mut endowed_accounts: Vec<AccountId> = endowed_accounts.unwrap_or_else(|| {
 		vec![
 			get_account_id_from_seed::<sr25519::Public>("Alice"),
-			get_account_id_from_seed::<sr25519::Public>("Bob"),
-			get_account_id_from_seed::<sr25519::Public>("Charlie"),
-			get_account_id_from_seed::<sr25519::Public>("Dave"),
-			get_account_id_from_seed::<sr25519::Public>("Eve"),
-			get_account_id_from_seed::<sr25519::Public>("Ferdie"),
-			get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Charlie//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Dave//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Eve//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Bob"),
+			// get_account_id_from_seed::<sr25519::Public>("Charlie"),
+			// get_account_id_from_seed::<sr25519::Public>("Dave"),
+			// get_account_id_from_seed::<sr25519::Public>("Eve"),
+			// get_account_id_from_seed::<sr25519::Public>("Ferdie"),
+			// get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Charlie//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Dave//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Eve//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
 		]
 	});
 	// endow all authorities and nominators.
@@ -269,7 +269,7 @@ pub fn testnet_genesis(
 
 	let num_endowed_accounts = endowed_accounts.len();
 
-	const ENDOWMENT: Balance = 1000_00 * DOLLARS;
+	const ENDOWMENT: Balance = 1000 * DOLLARS;
 	const STASH: Balance = ENDOWMENT / 1000;
 
 	GenesisConfig {

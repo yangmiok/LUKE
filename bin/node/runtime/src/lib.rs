@@ -1283,8 +1283,10 @@ parameter_types! {
 	pub const MaxGenerateRandom: u32 = 10;
     pub const BaseAmount: Balance = 1 * DOLLARS;
 	pub const Hundred: Balance = 100;
+    pub const Ninety: Balance = 90;
 	pub const Eighty: Balance = 80;
     pub const Seventy: Balance = 70;
+    pub const Sixty: Balance = 60;
     pub const Fifty: Balance = 50;
 	pub const Forty: Balance = 40;
     pub const Thirty: Balance = 30;
@@ -1292,6 +1294,7 @@ parameter_types! {
 	pub const Ten: Balance = 10;
 	pub const TotalAmount:  Balance =  100_0000_0000;
     pub const FeeAmount:    Balance =   10_0000_0000;
+    pub const Distance:     Balance =      2000_0000;
 	pub const MaxAmount:    Balance =   25_0000_0000;
 	pub const FirstPhase:   Balance =   20_0000_0000;
 	pub const SecendPhase:  Balance =   40_0000_0000;
@@ -1311,8 +1314,10 @@ impl pallet_lottery::Config for Runtime {
     type MaxGenerateRandom = MaxGenerateRandom;
     type WeightInfo = pallet_lottery::weights::SubstrateWeight<Runtime>;
     type Hundred = Hundred;
+    type Ninety = Ninety;
     type Eighty = Eighty;
     type Seventy = Seventy;
+    type Sixty = Sixty;
     type Fifty = Fifty;
     type Forty = Fifty;
     type Thirty = Fifty;
@@ -1321,6 +1326,7 @@ impl pallet_lottery::Config for Runtime {
     type BaseAmount = BaseAmount;
     type TotalAmount = TotalAmount;
     type FeeAmount = FeeAmount;
+    type Distance = Distance;
     type MaxAmount = MaxAmount;
     type FirstPhase = FirstPhase;
     type SecendPhase = SecendPhase;

@@ -65,7 +65,7 @@ use frame_support::{
 };
 pub use pallet::*;
 use sp_runtime::{
-	traits::{AccountIdConversion, Saturating, Zero},
+	traits::{AccountIdConversion, Saturating,Zero},
 	ArithmeticError, DispatchError,
 };
 use sp_std::prelude::*;
@@ -172,8 +172,10 @@ pub mod pallet {
 		/// Weight information for extrinsics in this pallet.
 		type WeightInfo: WeightInfo;
 		type Hundred: Get<BalanceOf<Self>>;
+		type Ninety: Get<BalanceOf<Self>>;
 		type Eighty: Get<BalanceOf<Self>>;
 		type Seventy: Get<BalanceOf<Self>>;
+		type Sixty: Get<BalanceOf<Self>>;
 		type Fifty: Get<BalanceOf<Self>>;
 		type Forty: Get<BalanceOf<Self>>;
 		type Thirty: Get<BalanceOf<Self>>;
@@ -182,6 +184,7 @@ pub mod pallet {
 		type BaseAmount: Get<BalanceOf<Self>>;
 		type TotalAmount: Get<BalanceOf<Self>>;
 		type FeeAmount: Get<BalanceOf<Self>>;
+		type Distance: Get<BalanceOf<Self>>;
 		type MaxAmount: Get<BalanceOf<Self>>;
 		type FirstPhase: Get<BalanceOf<Self>>;
 		type SecendPhase: Get<BalanceOf<Self>>;
@@ -243,6 +246,12 @@ pub mod pallet {
 	/// Total number of tickets sold.
 	#[pallet::storage]
 	pub(crate) type TicketsCount<T> = StorageValue<_, u32, ValueQuery>;
+
+
+	/// DistanceCount.
+	#[pallet::storage]
+	pub(crate) type DistanceCount<T> = StorageValue<_, u32, ValueQuery>;
+
 
 	/// Each ticket's owner.
 	///
@@ -393,10 +402,10 @@ pub mod pallet {
 		) -> DispatchResult {
 			// ensure_root(origin)?;
 
-			let temtotal = T::Currency::total_issuance()+ user_amount * T::BaseAmount::get();
-			info!( "TotalAmount: {:?}", T::TotalAmount::get()/T::BaseAmount::get());
+			let temtotal = (T::Currency::total_issuance()+ user_amount * T::BaseAmount::get())/T::BaseAmount::get();
+			info!( "TotalAmount: {:?}", T::TotalAmount::get());
 			info!( "total_issuance: {:?}", T::Currency::total_issuance()/T::BaseAmount::get());
-			info!("temtotal: {:?}", temtotal/T::BaseAmount::get());
+			info!("temtotal: {:?}", temtotal);
 
 			if temtotal.ge(&T::TotalAmount::get()){
 				info!("*** total_balance is >= 100_0000_0000");
@@ -407,12 +416,26 @@ pub mod pallet {
 			}
 
 			let account_llc = T::LLCAccount::get();
-			let llcTotalAmount = T::Currency::total_balance(&account_llc);
-			let remain = T::TotalAmount::get() - llcTotalAmount;
+			let  llc_total_amount = (T::Currency::total_balance(&account_llc))/T::BaseAmount::get();
+			info!("llc_total_amount:{:?}",llc_total_amount);
+			let remain = T::TotalAmount::get() - llc_total_amount;
 			info!("remain:{:?}",remain);
-			let llcamount = remain/T::FeeAmount;
-			T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
+			let consumer = T::Currency::total_issuance()/T::BaseAmount::get()-llc_total_amount;
+			info!("consumer:{:?}",consumer);
+			info!("Distance:{:?}",T::Distance::get());
+			//发行n，(剩下总量-n)*n/1000000000
+			// let llcamount = remain/T::FeeAmount::get();
 
+			// T::Distance =  T::FeeAmount::get();
+			if consumer.ge(&T::Distance::get()){
+				info!("consumer >:{:?}",T::Distance::get());
+				let llcamount = (remain-user_amount)*user_amount/T::FeeAmount::get()*T::Ninety::get()/T::Hundred::get();
+				T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
+
+			}else {
+				let llcamount = (remain-user_amount)*user_amount/T::FeeAmount::get();
+				T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
+			}
 
 			Self::deposit_event(Event::<T>::LotteryStarted);
 			Ok(())
