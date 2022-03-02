@@ -214,6 +214,7 @@ members = [
 	"utils/frame/generate-bags/node-runtime",
 	"utils/prometheus",
 	"utils/wasm-builder",
+	"orml/nft",
 ]
 
 # The list of dependencies below (which can be both direct and indirect dependencies) are crates
