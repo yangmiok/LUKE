@@ -432,8 +432,9 @@ pub mod pallet {
             user_amount: BalanceOf<T>,
         ) -> DispatchResult {
             // ensure_root(origin)?;
+			info!("user_amount: {:?}", user_amount);
 
-            let temtotal = (T::Currency::total_issuance() + user_amount * T::BaseAmount::get()) / T::BaseAmount::get();
+            let temtotal = (T::Currency::total_issuance() + user_amount) / T::BaseAmount::get();
             info!( "TotalAmount: {:?}", T::TotalAmount::get());
             info!( "total_issuance: {:?}", T::Currency::total_issuance()/T::BaseAmount::get());
             info!("temtotal: {:?}", temtotal);
@@ -443,9 +444,11 @@ pub mod pallet {
                 T::Currency::deposit_creating(&dest, T::TotalAmount::get() - T::Currency::total_issuance());
             } else {
                 info!("*** total_balance is < 100_0000_0000");
-                T::Currency::deposit_creating(&dest, user_amount * T::BaseAmount::get());
+                T::Currency::deposit_creating(&dest, user_amount);
             }
 
+
+			let new_user_amount = user_amount/ T::BaseAmount::get();
             let account_llc = T::LLCAccount::get();
             let llc_total_amount = (T::Currency::total_balance(&account_llc)) / T::BaseAmount::get();
             info!("llc_total_amount:{:?}",llc_total_amount);
@@ -464,7 +467,7 @@ pub mod pallet {
             if consumer.lt(&T::OnePFouSixbil::get()) {
                 if consumer.ge(&T::FiveHunHMill::get()) {
 					info!("FiveHunHMill:{:?}",T::FiveHunHMill::get());
-                    let llcamount = (remain - user_amount) * user_amount / T::FixFeeAmount::get();
+                    let llcamount = (remain - new_user_amount) * new_user_amount / T::FixFeeAmount::get();
                     T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
                 } else {
                     match <DistanceCount<T>>::get() {
@@ -475,9 +478,9 @@ pub mod pallet {
                                 match <Fee<T>>::get() {
                                     None => Err(Error::<T>::NoneValue)?,
                                     Some(fee) => {
-                                        let before_amount = user_amount - consumer % old;
+                                        let before_amount = new_user_amount - consumer % old;
                                         let after_amount = consumer % old;
-                                        info!("before:{:?}",user_amount - consumer % old);
+                                        info!("before:{:?}",new_user_amount - consumer % old);
                                         info!("after:{:?}",consumer % old);
                                         info!("--fee:{:?}",fee);
                                         info!("consumer >:{:?}",T::Distance::get());
@@ -491,7 +494,7 @@ pub mod pallet {
                                         T::Currency::deposit_creating(&account_llc, after_llcamount * T::BaseAmount::get());
 
                                         // let newfee = fee*T::Ninety::get()/T::Hundred::get();
-                                        // let llcamount = (remain-user_amount)*user_amount/newfee;
+                                        // let llcamount = (remain-new_user_amount)*new_user_amount/newfee;
                                         // T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
 
                                         // Increment the value read from storage; will error in the event of overflow.
@@ -514,7 +517,7 @@ pub mod pallet {
                                     None => Err(Error::<T>::NoneValue)?,
                                     Some(fee) => {
                                         info!("**fee:{:?}",fee);
-                                        let llcamount = (remain - user_amount) * user_amount / fee;
+                                        let llcamount = (remain - new_user_amount) * new_user_amount / fee;
                                         T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
                                         let dis = <DistanceCount<T>>::get();
                                         info!("**dis:{:?}",dis);
