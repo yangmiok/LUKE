@@ -1294,12 +1294,11 @@ parameter_types! {
 	pub const Ten: Balance = 10;
 	pub const TotalAmount:  Balance =  100_0000_0000;
     pub const FeeAmount:    Balance =   10_0000_0000;
+    pub const FiveHunHMill: Balance =    5_0000_0000;
+    pub const FixFeeAmount: Balance =  800_0000_0000;
+    pub const OnePFouSixbil:Balance =   14_6000_0000;
     pub const Distance:     Balance =      2000_0000;
 	pub const MaxAmount:    Balance =   25_0000_0000;
-	pub const FirstPhase:   Balance =   20_0000_0000;
-	pub const SecendPhase:  Balance =   40_0000_0000;
-	pub const ThirdPhase:   Balance =   60_0000_0000;
-	pub const ForthPhase:   Balance =   80_0000_0000;
 }
 
 impl pallet_lottery::Config for Runtime {
@@ -1326,12 +1325,11 @@ impl pallet_lottery::Config for Runtime {
     type BaseAmount = BaseAmount;
     type TotalAmount = TotalAmount;
     type FeeAmount = FeeAmount;
+    type FiveHunHMill = FiveHunHMill;
+    type FixFeeAmount = FixFeeAmount;
+    type OnePFouSixbil = OnePFouSixbil;
     type Distance = Distance;
     type MaxAmount = MaxAmount;
-    type FirstPhase = FirstPhase;
-    type SecendPhase = SecendPhase;
-    type ThirdPhase = ThirdPhase;
-    type ForthPhase = ForthPhase;
     type LLCAccount = AliceAccount;
 }
 
