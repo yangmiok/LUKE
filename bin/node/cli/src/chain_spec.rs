@@ -225,16 +225,17 @@ pub fn testnet_genesis(
 		vec![
 			get_account_id_from_seed::<sr25519::Public>("Alice"),
 			// get_account_id_from_seed::<sr25519::Public>("Bob"),
-			get_account_id_from_seed::<sr25519::Public>("Charlie"),
-			get_account_id_from_seed::<sr25519::Public>("Dave"),
-			get_account_id_from_seed::<sr25519::Public>("Eve"),
-			get_account_id_from_seed::<sr25519::Public>("Ferdie"),
-			get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Charlie//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Dave//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Eve//stash"),
-			get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Charlie"),
+			// get_account_id_from_seed::<sr25519::Public>("Dave"),
+			// get_account_id_from_seed::<sr25519::Public>("Eve"),
+			// get_account_id_from_seed::<sr25519::Public>("Ferdie"),
+			// get_account_id_from_seed::<sr25519::Public>("Alice//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Bob//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Charlie//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Dave//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Eve//stash"),
+			// get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
+			hex!["360e2ca0caf0e8c03c47542efdfec99de21cb79aebdf683c7c51a85c6d7bd35b"].into(),
 		]
 	});
 	// endow all authorities and nominators.

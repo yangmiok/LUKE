@@ -182,6 +182,11 @@ pub mod pallet {
         type Thirty: Get<BalanceOf<Self>>;
         type Twenty: Get<BalanceOf<Self>>;
         type Ten: Get<BalanceOf<Self>>;
+        type One: Get<BalanceOf<Self>>;
+        type Two: Get<BalanceOf<Self>>;
+        type Three: Get<BalanceOf<Self>>;
+        type Four: Get<BalanceOf<Self>>;
+        type Five: Get<BalanceOf<Self>>;
         type BaseAmount: Get<BalanceOf<Self>>;
         type TotalAmount: Get<BalanceOf<Self>>;
         type FeeAmount: Get<BalanceOf<Self>>;
@@ -452,7 +457,7 @@ pub mod pallet {
             let account_llc = T::LLCAccount::get();
             let llc_total_amount = (T::Currency::total_balance(&account_llc)) / T::BaseAmount::get();
             info!("llc_total_amount:{:?}",llc_total_amount);
-            let remain = T::TotalAmount::get() - llc_total_amount;
+            let remain = T::TotalAmount::get() -  T::Currency::total_issuance() / T::BaseAmount::get();
             info!("remain:{:?}",remain);
             let consumer = T::Currency::total_issuance() / T::BaseAmount::get() - llc_total_amount;
             info!("consumer:{:?}",consumer);
@@ -482,19 +487,20 @@ pub mod pallet {
                                         let after_amount = consumer % old;
                                         info!("before:{:?}",new_user_amount - consumer % old);
                                         info!("after:{:?}",consumer % old);
-                                        info!("--fee:{:?}",fee);
-                                        info!("consumer >:{:?}",T::Distance::get());
-                                        let before_llcamount = (remain - before_amount) * before_amount / fee;
+                                        info!("consumer >=:{:?}",T::Distance::get());
+                                        let before_fee = fee;
+                                        info!("--before-fee:{:?}",before_fee);
+                                        let before_llcamount = ((remain - before_amount) * before_amount /T::FeeAmount::get())*fee/T::FeeAmount::get();
                                         info!("before_llcamount:{:?}",before_llcamount);
                                         T::Currency::deposit_creating(&account_llc, before_llcamount * T::BaseAmount::get());
 
-                                        let after_remain = remain - before_llcamount;
-                                        let after_llcamount = (after_remain - after_amount) * after_amount / fee * T::Ninety::get() / T::Hundred::get();
+                                        let after_fee = fee*T::Ninety::get()/T::Hundred::get();
+                                        info!("--after-fee:{:?}",after_fee);
+                                        let after_llcamount = ((remain - before_llcamount - after_amount) * after_amount /T::FeeAmount::get())*after_fee/T::FeeAmount::get();
                                         info!("after_llcamount:{:?}",after_llcamount);
                                         T::Currency::deposit_creating(&account_llc, after_llcamount * T::BaseAmount::get());
 
-                                        // let newfee = fee*T::Ninety::get()/T::Hundred::get();
-                                        // let llcamount = (remain-new_user_amount)*new_user_amount/newfee;
+                                        // let llcamount = ((remain - new_user_amount) * new_user_amount /T::FeeAmount::get())*fee/T::FeeAmount::get();
                                         // T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
 
                                         // Increment the value read from storage; will error in the event of overflow.
@@ -516,14 +522,17 @@ pub mod pallet {
                                 match <Fee<T>>::get() {
                                     None => Err(Error::<T>::NoneValue)?,
                                     Some(fee) => {
+
                                         info!("**fee:{:?}",fee);
-                                        let llcamount = (remain - new_user_amount) * new_user_amount / fee;
+                                        let llcamount = ((remain - new_user_amount) * new_user_amount /T::FeeAmount::get())*fee/T::FeeAmount::get();
                                         T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
                                         let dis = <DistanceCount<T>>::get();
                                         info!("**dis:{:?}",dis);
 
                                         let llc_total_amount = (T::Currency::total_balance(&account_llc)) / T::BaseAmount::get();
                                         info!("**_llc_total_amount:{:?}",llc_total_amount);
+
+
                                     }
                                 }
                             }
@@ -531,7 +540,6 @@ pub mod pallet {
                     }
                 }
             }
-
             // Read a value from storage.
 
             Self::deposit_event(Event::<T>::IssueToken);

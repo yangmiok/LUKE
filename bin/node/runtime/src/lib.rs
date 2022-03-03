@@ -1271,9 +1271,7 @@ impl pallet_mmr::Config for Runtime {
 
 ord_parameter_types! {
     pub const AliceAccount: AccountId = AccountId::from(
-        // 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
-		// 0xbcb4c715c0eb06624eefc8ce25f41851844741bc77ac95eeec179422261a553c
-        hex_literal::hex!("7a445ed142619a6dfd5490ff11133cc4f3f1bfb5763864fb9f4e486989f3b312")
+        hex_literal::hex!("360e2ca0caf0e8c03c47542efdfec99de21cb79aebdf683c7c51a85c6d7bd35b")
     );
 }
 
@@ -1292,6 +1290,11 @@ parameter_types! {
     pub const Thirty: Balance = 30;
 	pub const Twenty: Balance = 20;
 	pub const Ten: Balance = 10;
+    pub const One: Balance = 1;
+    pub const Two: Balance = 2;
+    pub const Three: Balance = 3;
+    pub const Four: Balance = 4;
+    pub const Five: Balance = 5;
 	pub const TotalAmount:  Balance =  100_0000_0000;
     pub const FeeAmount:    Balance =   10_0000_0000;
     pub const FiveHunHMill: Balance =    5_0000_0000;
@@ -1318,10 +1321,15 @@ impl pallet_lottery::Config for Runtime {
     type Seventy = Seventy;
     type Sixty = Sixty;
     type Fifty = Fifty;
-    type Forty = Fifty;
-    type Thirty = Fifty;
-    type Twenty = Fifty;
-    type Ten = Fifty;
+    type Forty = Forty;
+    type Thirty = Thirty;
+    type Twenty = Twenty;
+    type Ten = Ten;
+    type One = One;
+    type Two = Two;
+    type Three = Three;
+    type Four = Four;
+    type Five = Five;
     type BaseAmount = BaseAmount;
     type TotalAmount = TotalAmount;
     type FeeAmount = FeeAmount;
