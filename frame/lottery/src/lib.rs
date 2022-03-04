@@ -472,7 +472,7 @@ pub mod pallet {
             if consumer.lt(&T::OnePFouSixbil::get()) {
                 if consumer.ge(&T::FiveHunHMill::get()) {
 					info!("FiveHunHMill:{:?}",T::FiveHunHMill::get());
-                    let llcamount = (remain - new_user_amount) * new_user_amount / T::FixFeeAmount::get();
+                    let llcamount = ((remain - new_user_amount) * new_user_amount /T::FeeAmount::get())*T::FixFeeAmount::get()/T::FeeAmount::get();
                     T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
                 } else {
                     match <DistanceCount<T>>::get() {
