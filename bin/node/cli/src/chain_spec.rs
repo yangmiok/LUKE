@@ -270,8 +270,8 @@ pub fn testnet_genesis(
 
 	let num_endowed_accounts = endowed_accounts.len();
 
-	const ENDOWMENT: Balance = 2 * DOLLARS;
-	const STASH: Balance = ENDOWMENT / 2;
+	const ENDOWMENT: Balance = 4 * DOLLARS;
+	const STASH: Balance = ENDOWMENT / 4;
 
 	GenesisConfig {
 		system: SystemConfig { code: wasm_binary_unwrap().to_vec() },
