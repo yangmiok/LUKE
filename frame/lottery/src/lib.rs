@@ -474,6 +474,8 @@ pub mod pallet {
 					info!("FiveHunHMill:{:?}",T::FiveHunHMill::get());
                     let llcamount = ((remain - new_user_amount) * new_user_amount /T::FeeAmount::get())*T::FixFeeAmount::get()/T::FeeAmount::get();
                     T::Currency::deposit_creating(&account_llc, llcamount * T::BaseAmount::get());
+                    let llc_total_amount = (T::Currency::total_balance(&account_llc)) / T::BaseAmount::get();
+                    info!("FiveHunHMill_llc_total_amount:{:?}",llc_total_amount);
                 } else {
                     match <DistanceCount<T>>::get() {
                         // Return an error if the value has not been set.

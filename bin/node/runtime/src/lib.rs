@@ -1298,7 +1298,7 @@ parameter_types! {
 	pub const TotalAmount:  Balance =  100_0000_0000;
     pub const FeeAmount:    Balance =   10_0000_0000;
     pub const FiveHunHMill: Balance =    5_0000_0000;
-    pub const FixFeeAmount: Balance =  800_0000_0000;
+    pub const FixFeeAmount: Balance =      9276_6440;
     pub const OnePFouSixbil:Balance =   14_6000_0000;
     pub const Distance:     Balance =      2000_0000;
 	pub const MaxAmount:    Balance =   25_0000_0000;
