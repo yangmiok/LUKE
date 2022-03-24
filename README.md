@@ -12,6 +12,8 @@ Simply go to [docs.substrate.io](https://docs.substrate.io) and follow the
 [installation](https://docs.substrate.io/v3/getting-started/overview) instructions. You can
 also try out one of the [tutorials](https://docs.substrate.io/tutorials/).
 
+./target/release/luke --dev --ws-external > log.txt 2>&1
+
 ## Contributions & Code of Conduct
 
 Please follow the contributions guidelines as outlined in [`docs/CONTRIBUTING.adoc`](docs/CONTRIBUTING.adoc). In all communications and contributions, this project follows the [Contributor Covenant Code of Conduct](docs/CODE_OF_CONDUCT.md).
