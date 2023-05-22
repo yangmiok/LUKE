@@ -355,7 +355,7 @@ fn development_config_genesis() -> GenesisConfig {
 /// Development config (single validator Alice)
 pub fn development_config() -> ChainSpec {
 	let mut properties = serde_json::map::Map::new();
-	properties.insert("tokenSymbol".into(), "LUKE".into());
+	properties.insert("tokenSymbol".into(), "GDC".into());
 	properties.insert("tokenDecimals".into(), 15.into());
 	ChainSpec::from_genesis(
 		"Development",
@@ -383,7 +383,7 @@ fn local_testnet_genesis() -> GenesisConfig {
 /// Local testnet config (multivalidator Alice + Bob)
 pub fn local_testnet_config() -> ChainSpec {
 	let mut properties = serde_json::map::Map::new();
-	properties.insert("tokenSymbol".into(), "LUKE".into());
+	properties.insert("tokenSymbol".into(), "GDC".into());
 	properties.insert("tokenDecimals".into(), 15.into());
 
 	ChainSpec::from_genesis(
@@ -419,7 +419,7 @@ pub(crate) mod tests {
 	/// Local testnet config (single validator - Alice)
 	pub fn integration_test_config_with_single_authority() -> ChainSpec {
 		let mut properties = serde_json::map::Map::new();
-		properties.insert("tokenSymbol".into(), "LUKE".into());
+		properties.insert("tokenSymbol".into(), "GDC".into());
 		properties.insert("tokenDecimals".into(), 15.into());
 		ChainSpec::from_genesis(
 			"Integration Test",
@@ -438,7 +438,7 @@ pub(crate) mod tests {
 	/// Local testnet config (multivalidator Alice + Bob)
 	pub fn integration_test_config_with_two_authorities() -> ChainSpec {
 		let mut properties = serde_json::map::Map::new();
-		properties.insert("tokenSymbol".into(), "LUKE".into());
+		properties.insert("tokenSymbol".into(), "GDC".into());
 		properties.insert("tokenDecimals".into(), 15.into());
 		ChainSpec::from_genesis(
 			"Integration Test",
